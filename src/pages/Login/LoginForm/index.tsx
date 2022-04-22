@@ -1,38 +1,50 @@
-import React, { FormEvent, ReactElement, useState } from 'react';
+import React, { FormEvent, ReactElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../../components/Form/Button';
 import Input from '../../../components/Form/Input';
 import useForm from '../../../hooks/useForm';
+
+import { TOKEN_POST, USER_GET } from '../../../api';
 
 const LoginForm: React.FC = (): ReactElement => {
 	const username = useForm();
 	const password = useForm();
 	// console.log(username);
 
-	const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const getUser = async (token: string): Promise<void> => {
+		const { url, options } = USER_GET(token);
+		const response = await fetch(url, options);
+		const json = await response.json();
+	};
 
+	const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		// Verifica se os campos estão preenchidos antes de enviar o form
 		if (username.validate() && password.validate()) {
-			// Envia uma requisição do tipo POST ao submeter o formulário
-			fetch('https://dogsapi.origamid.dev/json/jwt-auth/v1/token', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
+			const { url, options } = TOKEN_POST({
+				username: username.value,
+				password: password.value,
+			});
 
-				// JSON.stringify = transforma o objeto em sring
-				body: JSON.stringify({}),
-			})
-				.then((response) => {
-					console.log(response);
-					return response.json();
-				})
-				.then((json) => {
-					console.log(json);
-				});
+			// Envia uma requisição do tipo POST ao submeter o formulário
+			const response = await fetch(url, options);
+			const json = await response.json();
+			// console.log(json);
+
+			// Insere os dados no localstorage
+			localStorage.setItem('token', json.token);
+
+			// Envia o token para a função getUser
+			getUser(json.token);
 		}
 	};
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if (token) {
+			getUser(token);
+		}
+	}, []);
 
 	return (
 		<section>

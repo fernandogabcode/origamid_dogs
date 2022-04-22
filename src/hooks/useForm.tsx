@@ -21,7 +21,7 @@ const useForm = (type?: string | boolean) => {
 			setError('Preencha um valor.');
 			return false;
 			// Verifica se foi inserido o tipo
-		} else if (types.email && !types.email.regex.test(value)) {
+		} else if (type === 'email' && !types.email.regex.test(value)) {
 			setError(types.email.message);
 			return false;
 		} else {
@@ -41,6 +41,7 @@ const useForm = (type?: string | boolean) => {
 		onBlur: () => validate(value),
 		setValue,
 		onChange,
+		value,
 		error,
 	};
 };
