@@ -7,17 +7,21 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 
+import { UserStorage } from './context/UserContext';
+
 type Props = {};
 
 const App = (props: Props) => {
 	return (
 		<>
-			<Header />
-			<Routes>
-				<Route path='/' element={<Home />} />
-				<Route path='/login/*' element={<Login />} />
-			</Routes>
-			<Footer />
+			<UserStorage>
+				<Header />
+				<Routes>
+					<Route path='/' element={<Home />} />
+					<Route path='/login/*' element={<Login />} />
+				</Routes>
+				<Footer />
+			</UserStorage>
 		</>
 	);
 };

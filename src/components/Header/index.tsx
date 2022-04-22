@@ -2,11 +2,13 @@ import s from './styles.module.scss';
 import { Link } from 'react-router-dom';
 
 import { ReactComponent as Brand } from '../../assets/icons/dogs.svg';
-import { ReactElement } from 'react';
+import { ReactElement, useContext } from 'react';
 
-type Props = {};
+import { UserContext } from '../../context/UserContext';
 
-const Header: React.FC = (props: Props): ReactElement => {
+const Header: React.FC = (): ReactElement => {
+	// const user = useContext(UserContext);
+
 	return (
 		<header className={s['header']}>
 			<div className={`${s['content']} container`}>
